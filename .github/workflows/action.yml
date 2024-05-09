@@ -1,1 +1,17 @@
+name: Reusable Github Actions - Demo
 
+run-name: Github Reusable Workflow
+
+on:
+  workflow_call:
+
+jobs:
+  called-workflow:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out Repository
+        uses: actions/checkout@v3
+
+      - name: Print the git version
+        run: |
+          git --version
