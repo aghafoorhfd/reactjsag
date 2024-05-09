@@ -15,3 +15,10 @@ jobs:
       - name: Print the git version
         run: |
           git --version
+      - name: Clone the Github Repository
+        run: |
+         git clone https://${{ secrets.GITHUB_TOKEN }}@github.com/aghafoorhfd/reactjsag.git
+         ls reactjsag
+    
+
+         
