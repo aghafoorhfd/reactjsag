@@ -1,16 +1,1 @@
-name: nestjs workflow
-description: nestjs workflow
-runs:
-  using: "composite"
-  steps:
-    - uses: actions/setup-node@v4
-      with:
-        node-version: 20
-    - name: npm ci
-      run: |
-        npm ci
-      shell: bash
-    - name: npm test
-      run: |
-        npm test
-      shell: bash
+
