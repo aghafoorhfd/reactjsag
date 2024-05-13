@@ -7,7 +7,7 @@ jobs:
   call_reusable_workflow:
     runs-on: ubuntu-latest
     steps:
-      - name: Call Reusable Workflow
+      - name: Call Reusable Workflow ok 
         uses: aghafoorhfd/reactjsag/.github/workflows/action.yml@main
         with:
           input1: ${{ secrets.INPUT_VALUE }}
