@@ -8,6 +8,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Call Reusable Workflow
-        uses: ./.github/workflows/reusable_workflow.yml
+        uses: ./.github/workflows/action.yml
         with:
           input1: ${{ secrets.INPUT_VALUE }}
