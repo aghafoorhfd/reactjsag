@@ -1,13 +1,12 @@
+
+name: Reusable GA Workflow Demo AQA
+
 on:
   push:
-    branches:
-      - main
 
 jobs:
-  call_reusable_workflow:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Call Reusable Workflow ok 
-        uses: aghafoorhfd/reactjsag/.github/workflows/action.yml@main
-        with:
+  calling-workflow:
+    uses: aghafoorhfd/reactjsag/.github/workflows/action.yml@main
+    with:
           input1: ${{ secrets.INPUT_VALUE }}
+
