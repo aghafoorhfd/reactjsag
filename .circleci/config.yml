@@ -1,47 +1,62 @@
-# This config was automatically generated from your source code
-# Stacks detected: cicd:github-actions:.github/workflows,cicd:gitlab-workflows:.,deps:node:.,package_manager:yarn:
 version: 2.1
-orbs:
-  node: circleci/node@5
+
+executors:
+  docker-executor:
+    docker:
+      - image: circleci/node:14  # Use a Node.js image suitable for building React.js apps
+
 jobs:
-  build-node:
-    # Build node project
-    executor: node/default
+  build-and-push:
+    executor: docker-executor
     steps:
       - checkout
-      - node/install-packages:
-          pkg-manager: yarn
+      
+      # Install Docker CLI and AWS CLI
       - run:
-          command: yarn run build
+          name: Install Docker CLI
+          command: |
+            sudo apt-get update
+            sudo apt-get install -y docker.io
       - run:
-          name: Create the ~/artifacts directory if it doesn't exist
-          command: mkdir -p ~/artifacts
-      # Copy output to artifacts dir
+          name: Install AWS CLI
+          command: |
+            sudo apt-get update
+            sudo apt-get install -y awscli
+      
+      # Install dependencies and build the React app
       - run:
-          name: Copy artifacts
-          command: cp -R build dist public .output .next .docusaurus ~/artifacts 2>/dev/null || true
-      - store_artifacts:
-          path: ~/artifacts
-          destination: node-build
-  deploy:
-    # This is an example deploy job, not actually used by the workflow
-    docker:
-      - image: cimg/base:stable
-    steps:
-      # Replace this with steps to deploy to users
+          name: Install dependencies
+          command: npm install
       - run:
-          name: deploy
-          command: '#e.g. ./deploy.sh'
+          name: Build React app
+          command: npm run build
+      
+      # Log in to AWS ECR
       - run:
-          name: found github actions config
-          command: ':'
+          name: Login to AWS ECR
+          command: |
+            aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com
+      
+      # Build Docker image
       - run:
-          name: found gitlab workflows config
-          command: ':'
+          name: Build Docker image
+          command: |
+            docker build -t devopsfe .
+      
+      # Tag Docker image
+      - run:
+          name: Tag Docker image
+          command: |
+            docker tag devopsfe:latest $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/devopsfe:latest
+      
+      # Push Docker image to ECR
+      - run:
+          name: Push Docker image to ECR
+          command: |
+            docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/devopsfe:latest
+
 workflows:
-  build:
+  version: 2
+  build-and-deploy:
     jobs:
-      - build-node
-    # - deploy:
-    #     requires:
-    #       - build-node
+      - build-and-push
