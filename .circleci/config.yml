@@ -11,12 +11,17 @@ jobs:
     steps:
       - checkout
       
-      # Install Docker CLI using the official installation script
+      # Check if Docker is installed and install if not
       - run:
-          name: Install Docker CLI
+          name: Check Docker installation
           command: |
-            curl -fsSL https://get.docker.com -o get-docker.sh
-            sh get-docker.sh
+            if ! command -v docker &> /dev/null
+            then
+              curl -fsSL https://get.docker.com -o get-docker.sh
+              sh get-docker.sh
+            else
+              echo "Docker is already installed"
+            fi
       
       # Install AWS CLI
       - run:
