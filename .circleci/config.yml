@@ -11,15 +11,18 @@ jobs:
     steps:
       - checkout
       
-      # Install Docker CLI and AWS CLI
+      # Install Docker CLI using the official installation script
       - run:
           name: Install Docker CLI
-          command:
-            sudo apt-get install -y docker.io
+          command: |
+            curl -fsSL https://get.docker.com -o get-docker.sh
+            sh get-docker.sh
+      
+      # Install AWS CLI
       - run:
           name: Install AWS CLI
           command: |
-            
+            sudo apt-get update
             sudo apt-get install -y awscli
       
       # Install dependencies and build the React app
@@ -40,19 +43,19 @@ jobs:
       - run:
           name: Build Docker image
           command: |
-            docker build -t devopsfe .
+            docker build -t my-react-app .
       
       # Tag Docker image
       - run:
           name: Tag Docker image
           command: |
-            docker tag devopsfe:latest $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/devopsfe:latest
+            docker tag my-react-app:latest $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/my-react-app:latest
       
       # Push Docker image to ECR
       - run:
           name: Push Docker image to ECR
           command: |
-            docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/devopsfe:latest
+            docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/my-react-app:latest
 
 workflows:
   version: 2
