@@ -1,15 +1,40 @@
-version: 2.1
+version: '2.1'
 
 orbs:
-  aws-ecr: circleci/aws-ecr@8.1.3
+  aws-cli: circleci/aws-cli@4.0
+  docker: circleci/docker@3.0
+
+jobs:
+  aws-cli-example:
+    docker:
+      - image: circleci/python:3.8
+    steps:
+      - checkout
+      - aws-cli/setup:
+          profile-name: default
+      - setup_remote_docker:
+          version: 20.10.7
+      - run:
+          name: Install AWS CLI
+          command: |
+            sudo apt-get update
+            sudo apt-get install -y awscli
+      - run:
+          name: Log in to Amazon ECR
+          command: |
+            aws ecr get-login-password --region us-east-2 | docker login --username AWS --password-stdin 180432984958.dkr.ecr.us-east-2.amazonaws.com
+      - run:
+          name: Build Docker Image
+          command: docker build -t my-image:latest .
+      - run:
+          name: Tag Docker Image
+          command: docker tag my-image:latest 180432984958.dkr.ecr.us-east-2.amazonaws.com/my-image:latest
+      - run:
+          name: Push Docker Image to ECR
+          command: docker push 180432984958.dkr.ecr.us-east-2.amazonaws.com/my-image:latest
 
 workflows:
-  build_and_push_image:
+  aws-cli:
     jobs:
-      - aws-ecr/build-and-push-image:
+      - aws-cli-example:
           context: agdev
-          create-repo: true
-          dockerfile: Dockerfile
-          path: .
-          repo: reactjsag
-          tag: "$CIRCLE_SHA1"
