@@ -1,69 +1,16 @@
-version: 2.1
-
-executors:
-  docker-executor:
-    docker:
-      - image: circleci/node:14  # Use a Node.js image suitable for building React.js apps
-
+version: '2.1'
+orbs:
+  aws-cli: circleci/aws-cli@4.0
 jobs:
-  build-and-push:
-    executor: docker-executor
+  aws-cli-example:
+    executor: aws-cli/default
     steps:
       - checkout
-      
-      # Check if Docker is installed and install if not
-      - run:
-          name: Check Docker installation
-          command: |
-            if ! command -v docker &> /dev/null
-            then
-              curl -fsSL https://get.docker.com -o get-docker.sh
-              sh get-docker.sh
-            else
-              echo "Docker is already installed"
-            fi
-      
-      # Install AWS CLI
-      - run:
-          name: Install AWS CLI
-          command: |
-            sudo apt-get update
-            sudo apt-get install -y awscli
-      
-      # Install dependencies and build the React app
-      - run:
-          name: Install dependencies
-          command: npm install
-      - run:
-          name: Build React app
-          command: npm run build
-      
-      # Log in to AWS ECR
-      - run:
-          name: Login to AWS ECR
-          command: |
-            aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com
-      
-      # Build Docker image
-      - run:
-          name: Build Docker image
-          command: |
-            docker build -t my-react-app .
-      
-      # Tag Docker image
-      - run:
-          name: Tag Docker image
-          command: |
-            docker tag my-react-app:latest $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/my-react-app:latest
-      
-      # Push Docker image to ECR
-      - run:
-          name: Push Docker image to ECR
-          command: |
-            docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/my-react-app:latest
-
+      - aws-cli/setup:
+          profile_name: example
+      - run: echo "Run your code here"
 workflows:
-  version: 2
-  build-and-deploy:
+  aws-cli:
     jobs:
-      - build-and-push
+      - aws-cli-example:
+          context: agdev
