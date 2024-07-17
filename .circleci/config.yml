@@ -11,14 +11,10 @@ jobs:
     steps:
       - checkout
       - aws-cli/setup:
-          
+        
       - setup_remote_docker:
+          version: 20.10.7
           docker_layer_caching: true
-      - run:
-          name: Install AWS CLI
-          command: |
-            sudo apt-get update
-            sudo apt-get install -y awscli
       - run:
           name: Log in to Amazon ECR
           command: |
