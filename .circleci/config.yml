@@ -1,25 +1,42 @@
 version: 2.1
+
+orbs:
+  aws-cli: circleci/aws-cli@4.0
+
 jobs:
   build:
     working_directory: ~/app
     docker:
       - image: cimg/base:2022.09
-        auth:
-          username: abdulghafoor
-          password: ABC123ssi
     steps:
       - checkout
+      - aws-cli/setup:
+          profile-name: default
       - setup_remote_docker:
           docker_layer_caching: true
-
       - run:
-          name: Build Docker image as 
+          name: Install AWS CLI
+          command: |
+            sudo apt-get update
+            sudo apt-get install -y awscli
+      - run:
+          name: Log in to Amazon ECR
+          command: |
+            aws ecr get-login-password --region us-east-2 | docker login --username AWS --password-stdin 180432984958.dkr.ecr.us-east-2.amazonaws.com
+      - run:
+          name: Build Docker image
           command: |
             TAG=0.1.$CIRCLE_BUILD_NUM
-            docker build -t abdulghafoor/agdevops:$TAG .
+            docker build -t 180432984958.dkr.ecr.us-east-2.amazonaws.com/agdevops:$TAG .
       - run:
           name: Push application Docker image
           command: |
             TAG=0.1.$CIRCLE_BUILD_NUM
-            echo ABC123ssi | docker login -u abdulghafoor --password-stdin
-            docker push abdulghafoor/agdevops:$TAG
+            docker push 180432984958.dkr.ecr.us-east-2.amazonaws.com/agdevops:$TAG
+
+workflows:
+  version: 2
+  build_and_push:
+    jobs:
+      - build:
+          context: agdev
