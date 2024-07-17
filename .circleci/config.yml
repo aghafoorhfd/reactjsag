@@ -16,9 +16,6 @@ jobs:
       - setup_remote_docker:
           version: 19.03.12
       - run: |
-          # Install AWS CLI
-          sudo apt-get update
-          sudo apt-get install -y awscli
           
           # Log in to Amazon ECR
           aws ecr get-login-password --region us-east-2 | docker login --username AWS --password-stdin 180432984958.dkr.ecr.us-east-2.amazonaws.com
