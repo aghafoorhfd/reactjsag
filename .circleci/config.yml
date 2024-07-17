@@ -8,7 +8,19 @@ jobs:
       - checkout
       - aws-cli/setup:
           profile_name: default
-      - run: aws ecr get-login-password --region us-east-2 | docker login --username AWS --password-stdin 180432984958.dkr.ecr.us-east-2.amazonaws.com
+      - run: |
+          
+          # Log in to Amazon ECR
+          aws ecr get-login-password --region us-east-2 | docker login --username AWS --password-stdin 180432984958.dkr.ecr.us-east-2.amazonaws.com
+          
+          # Build the Docker image
+          docker build -t devopsfe:latest .
+          
+          # Tag the Docker image for ECR
+          docker tag devopsfe:latest 180432984958.dkr.ecr.us-east-2.amazonaws.com/devopsfe:latest
+          
+          # Push the Docker image to ECR
+          docker push 180432984958.dkr.ecr.us-east-2.amazonaws.com/devopsfe:latest
 workflows:
   aws-cli:
     jobs:
