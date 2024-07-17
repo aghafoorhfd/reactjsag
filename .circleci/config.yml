@@ -8,7 +8,7 @@ jobs:
       - checkout
       - aws-cli/setup:
           profile_name: default
-      - run: echo "Run your code here"
+      - run: aws ecr get-login-password --region us-east-2 | docker login --username AWS --password-stdin 180432984958.dkr.ecr.us-east-2.amazonaws.com
 workflows:
   aws-cli:
     jobs:
