@@ -10,11 +10,13 @@ jobs:
       - image: cimg/base:2022.09
     steps:
       - checkout
-      - aws-cli/setup:
-          profile-name: default
       - setup_remote_docker:
           version: 20.10.7
           docker_layer_caching: true
+      - aws-cli/setup:
+          aws-access-key-id: $AWS_ACCESS_KEY_ID
+          aws-secret-access-key: $AWS_SECRET_ACCESS_KEY
+          aws-region: us-east-2
       - run:
           name: Log in to Amazon ECR
           command: |
