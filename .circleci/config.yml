@@ -11,7 +11,7 @@ jobs:
     steps:
       - checkout
       - aws-cli/setup:
-          profile-name: default
+          
       - setup_remote_docker:
           docker_layer_caching: true
       - run:
