@@ -5,4 +5,4 @@ jobs:
     docker:
      - image: cimg/base:2022.05
     steps:
-        - run: echo "Say hello to YAML!"
+        - run: aws ecr get-login-password --region us-east-2 | docker login --username AWS --password-stdin 180432984958.dkr.ecr.us-east-2.amazonaws.com
