@@ -2,8 +2,6 @@ version: '2.1'
 
 orbs:
   aws-cli: circleci/aws-cli@4.0
-  docker: circleci/docker@3.0
-
 jobs:
   aws-cli-example:
     docker:
@@ -14,11 +12,8 @@ jobs:
           profile-name: default
       - setup_remote_docker:
           version: 20.10.7
-      - run:
-          name: Install AWS CLI
-          command: |
-            sudo apt-get update
-            sudo apt-get install -y awscli
+          docker_layer_caching: true
+
       - run:
           name: Log in to Amazon ECR
           command: |
