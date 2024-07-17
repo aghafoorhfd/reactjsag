@@ -14,8 +14,8 @@ jobs:
           version: 20.10.7
           docker_layer_caching: true
       - aws-cli/setup:
-          aws-access-key-id: $AWS_ACCESS_KEY_ID
-          aws-secret-access-key: $AWS_SECRET_ACCESS_KEY
+          aws-access-key-id: AKIASUAVE3N7O6VLAXNR
+          aws-secret-access-key: EyF/Nzuzvw2hNnM+IE6JG0PF2EbTLJYUeO+YH0SQok
           aws-region: us-east-2
       - run:
           name: Log in to Amazon ECR
