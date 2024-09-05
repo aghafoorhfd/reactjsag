@@ -26,12 +26,12 @@ jobs:
           name: Build Docker image
           command: |
             TAG=0.1.$CIRCLE_BUILD_NUM
-            docker build -t 480294271769.dkr.ecr.us-east-2.amazonaws.com/devopsfe:$TAG .
+            docker build -t 480294271769.dkr.ecr.us-east-2.amazonaws.com/devopsfe:latest .
       - run:
           name: Push application Docker image
           command: |
             TAG=0.1.$CIRCLE_BUILD_NUM
-            docker push 480294271769.dkr.ecr.us-east-2.amazonaws.com/devopsfe:$TAG
+            docker push 480294271769.dkr.ecr.us-east-2.amazonaws.com/devopsfe:latest
 
 workflows:
   version: 2
